@@ -1,6 +1,9 @@
 import streamlit as st
+import s3fs
 import pandas as pd
 import numpy as np
+
+fs = s3fs.S3FileSystem(anon=False)
 
 st.title('Yelp map trial')
 
@@ -8,6 +11,7 @@ st.title('Yelp map trial')
 DATA_URL = ('https://cmpt732-no-error.s3.us-west-2.amazonaws.com/yelp_business.json')
 
 @st.cache
+@st.experimental_memo(ttl=600)
 def load_data():
     data = pd.read_json(DATA_URL)
     selected = data.select('name','state','star')
