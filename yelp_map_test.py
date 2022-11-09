@@ -8,13 +8,12 @@ fs = s3fs.S3FileSystem(anon=False)
 st.title('Yelp map trial')
 
 
-DATA_URL = ('https://cmpt732-no-error.s3.us-west-2.amazonaws.com/yelp_business.json')
+file_uload = st.file_uploader('yelp_business.json')
 
 @st.cache
-@st.experimental_memo(ttl=600)
 def load_data():
-    data = pd.read_json(DATA_URL)
-    selected = data.select('name','state','star')
+    data = pd.read_json(file_uload,lines=True)
+    selected = data.get('name')
     return selected
 
 data_load_state = st.text('Loading data...')
@@ -27,13 +26,26 @@ if st.checkbox('Show raw data'):
 
 st.subheader('Map')
 
+def load_data_map():
+    data = pd.read_json(file_uload,lines=True)
+    selected = data[['latitude','longitude','state']]
+    return selected
+
+data_load_state = st.text('Loading data...')
+map_data = load_data_map()
+data_load_state.text('Loading data...done!')
+
+st.map(map_data)
+
+
 
 
 state_option = st.selectbox(
     'Choose a state:',
-    ('CA', 'MO', 'TN'))
+     ('AB', 'MO', 'TN','CA','IN','ID','FL'))
 
-filtered_data = data[data.state == state_option]
+filtered_data = map_data[map_data['state'] == state_option]
+
 
 st.subheader(f'Bussiness in {state_option}:')
 st.map(filtered_data)
