@@ -1,9 +1,9 @@
 import streamlit as st
-import s3fs
+
 import pandas as pd
 import numpy as np
 
-fs = s3fs.S3FileSystem(anon=False)
+
 
 st.title('Yelp map trial')
 
